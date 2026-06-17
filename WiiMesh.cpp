@@ -274,7 +274,8 @@ int main(int argc, char *argv[])
 		file.write((char*)&boneOffsets[i], sizeof(aiMatrix4x4));
 	}
 
-	file.write((char*)boneParents.data(), boneParents.size());
+	if (boneParents.size() > 0)
+		file.write((char*)boneParents.data(), boneParents.size());
 
 	uint16_t chunkCount = (uint16_t)chunks.size();
 	file.write((char*)&chunkCount, sizeof(uint16_t));
