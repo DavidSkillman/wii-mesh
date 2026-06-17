@@ -21,16 +21,6 @@ Modern model formats are designed for flexibility and compatibility rather than 
 
 The `.wmesh` format stores only the information required by the engine, allowing assets to be loaded quickly and predictably on real hardware. This keeps the runtime simple while allowing content to be authored using standard modelling tools.
 
-### Workflow
-
-```mermaid
-flowchart TD
-    A[Blender / Maya / 3ds Max] --> B[Assimp]
-    B --> C[Wii Mesh]
-    C --> D[.wmesh]
-    D --> E[Wii 3D Engine]
-```
-
 ### Additional Processing
 
 Wii Mesh does more than simply convert file formats. During export, models are analyzed and processed to ensure they are compatible with the Wii engine's rendering pipeline.
@@ -40,6 +30,8 @@ This includes:
 * Converting supported model formats through Assimp
 * Generating optimized engine-ready mesh data
 * Removing unnecessary runtime processing
+* Joining identical vertices
+* Diffuse materials with metallic and roughness
 * Splitting oversized meshes into multiple chunks when required
 
 ### Automatic Mesh Chunking
@@ -66,6 +58,35 @@ flowchart TD
 
 This allows complex scenes and high-detail models to be imported while remaining compatible with the limitations of Wii hardware and the engine's rendering architecture.
 
+### Asset Optimization
+
+In addition to converting models into the engine's native `.wmesh` format, Wii Mesh performs a number of optimizations designed for constrained hardware.
+
+By removing unnecessary data, reorganizing mesh information, and storing assets in a compact binary representation, exported models are often significantly smaller than their original source files. Depending on the source format and model complexity, `.wmesh` files can be nearly half the size of the original asset while remaining fast to load and render.
+
+Benefits include:
+
+* Reduced storage requirements
+* Faster loading times
+* Lower memory usage
+* Minimal runtime processing
+* Improved compatibility with Wii hardware
+
+### Supported Formats
+
+Wii Mesh uses Assimp to import models, allowing it to read a wide variety of common 3D formats, including:
+
+* OBJ
+* FBX
+* DAE (Collada)
+* 3DS
+* STL
+* PLY
+* X
+* GLTF / GLB
+
+and many others supported by Assimp.
+
 ## Requirements
 
 Before building, install:
@@ -90,14 +111,14 @@ cd wii-mesh
 2. At the top of Visual Studio, switch the build configuration from **Debug** to **Release** if needed.
 3. Open **Project > Properties**.
 
-<img width="600" alt="image" src="https://github.com/user-attachments/assets/db9d5dce-a562-48a5-87b1-8f9e6bd2f038" />
+<img alt="image" src="https://github.com/user-attachments/assets/db9d5dce-a562-48a5-87b1-8f9e6bd2f038" />
 
 5. Set:
 
    * **Configuration** to **All Configurations**
    * **Platform** to **All Platforms**
 
-<img width="600" alt="image" src="https://github.com/user-attachments/assets/cba5691d-abcf-4427-b554-c067d804bd83" />
+<img alt="image" src="https://github.com/user-attachments/assets/cba5691d-abcf-4427-b554-c067d804bd83" />
 
 ### Add the Assimp library path
 
@@ -107,7 +128,7 @@ cd wii-mesh
 4. Add the path to your Assimp installation with `\lib\x64` appended.
    * Example: `C:\Libraries\Assimp\lib\x64`
 
-<img width="600" alt="image" src="https://github.com/user-attachments/assets/3df57db3-2ee1-425e-b9bb-35d03438e57b" />
+<img alt="image" src="https://github.com/user-attachments/assets/3df57db3-2ee1-425e-b9bb-35d03438e57b" />
 
 5. Click **OK**.
 
@@ -118,7 +139,7 @@ cd wii-mesh
 3. Add the path to your Assimp installation with `\include` appended.
    * Example: `C:\Libraries\Assimp\include`
 
-<img width="600" alt="image" src="https://github.com/user-attachments/assets/879a5daa-81a3-440b-b6f0-ad3303cac7e3" />
+<img alt="image" src="https://github.com/user-attachments/assets/879a5daa-81a3-440b-b6f0-ad3303cac7e3" />
 
 4. Click **OK**.
 
@@ -133,7 +154,7 @@ cd wii-mesh
 assimp-vc145-mt.lib
 ```
 
-<img width="600" alt="image" src="https://github.com/user-attachments/assets/1dd6baa4-7a02-4a98-97a5-43f466521952" />
+<img alt="image" src="https://github.com/user-attachments/assets/1dd6baa4-7a02-4a98-97a5-43f466521952" />
 
 5. Click **OK**.
 
@@ -146,7 +167,7 @@ assimp-vc145-mt.lib
 5. Right-click the added file and choose **Properties**.
 6. Change **Item Type** to **Copy file**.
 
-<img width="600" alt="image" src="https://github.com/user-attachments/assets/abf6d916-45eb-4286-b339-9ee9afb99982" />
+<img alt="image" src="https://github.com/user-attachments/assets/abf6d916-45eb-4286-b339-9ee9afb99982" />
 
 7. Click **OK**.
 
@@ -154,10 +175,32 @@ assimp-vc145-mt.lib
 
 Once everything is configured, build the project in **Release** mode.
 
-<img width="362" height="28" alt="image" src="https://github.com/user-attachments/assets/13961b3b-3953-4fa1-bf4a-6b4c10939a6f" />
+<img alt="image" src="https://github.com/user-attachments/assets/13961b3b-3953-4fa1-bf4a-6b4c10939a6f" />
 
 ## Notes
 
 * The Assimp library, include path, and DLL must all match the same architecture.
 * If Visual Studio cannot find Assimp, double-check the folder paths in the project properties.
 * This exporter is intended to work with the Wii engine pipeline and Wire3D.
+
+## Usage
+
+Wii Mesh is designed to be simple to use.
+
+#### Drag and Drop
+
+Drag a supported 3D model file onto `WiiMesh.exe` in File Explorer.
+
+<img alt="image" src="https://github.com/user-attachments/assets/10ca3cf7-c525-4c74-a481-dcb32d86d6f9" />
+
+The exporter will automatically process the model and generate a `.wmesh` file.
+
+#### Command Line
+
+You can also run Wii Mesh from a terminal or command prompt.
+
+```bash
+WiiMesh MyModel.fbx
+```
+
+This is useful for automation, batch processing, and integrating the exporter into build pipelines.
