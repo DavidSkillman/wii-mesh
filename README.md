@@ -1,7 +1,4 @@
 # Wii Mesh
-
-A mesh conversion and asset pipeline tool for the Wii 3D Engine.
-
 Wii Mesh is a desktop application that converts common 3D model formats into a custom binary mesh format designed specifically for the Nintendo Wii. Using Assimp, the tool can import models created in popular software such as Blender, Maya, and 3ds Max, then process and export them into a format that can be loaded efficiently by the engine.
 
 The primary goal of Wii Mesh is to move expensive asset processing tasks from the Wii onto the development PC. Instead of parsing large and complex model formats at runtime, assets are converted ahead of time into a compact representation optimized for fast loading and low memory usage.
