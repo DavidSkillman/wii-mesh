@@ -201,3 +201,7 @@ WiiMesh MyModel.fbx
 ```
 
 This is useful for automation, batch processing, and integrating the exporter into build pipelines.
+
+---
+
+Made with ❤ by David Skillman
